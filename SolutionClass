@@ -8,14 +8,38 @@ namespace Mastermind
 {
     class solutionClass
     {
-        Random rng = new Random();
-        codeClass Solution = new codeClass();
+        codeClass SolutionCode = new codeClass(); //this no arg constructor means SolutionCode uses random color pegs
         public solutionClass()
         {
         }
-        public Boolean Check(codeClass guess)
+        public Boolean Check(codeClass guess, out int correctColor, out int correctPosition)
         {
-            return true;
+            correctColor = 0;
+            correctPosition = 0;
+            //checks if the guess matched the solution
+            if (guess.getFirstPeg().Equals(SolutionCode.getFirstPeg()))
+            {
+                correctPosition++;
+            }
+            if (guess.getSecondPeg().Equals(SolutionCode.getSecondPeg()))
+            {
+                correctPosition++;
+            }
+            if (guess.getThirdPeg().Equals(SolutionCode.getThirdPeg()))
+            {
+                correctPosition++;
+            }
+            if (guess.getFourthPeg().Equals(SolutionCode.getFourthPeg()))
+            {
+                correctPosition++;
+            }
+            if (correctPosition == 4)
+            {
+                return true;//only returns true when the game is solved. Otherwise, it should return false but still update the two counter variables
+            }
+
+            //add the check for if the color is correct but not necessarily the position here
+
         }
     }
 }
