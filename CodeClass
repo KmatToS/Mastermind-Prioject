@@ -6,36 +6,40 @@ using System.Threading.Tasks;
 
 namespace Mastermind
 {
-    class codeClass
+    class solutionClass
     {
-        string firstPeg;
-        string secondPeg;
-        string thirdPeg;
-        string fourthPeg;
-        Random rng = new Random();
-        string[] colorArray = new string[6] {"Red", "Blue", "Yellow", "Green", "Purple", "Orange"};
-
-        public codeClass()
-        {//constructor that makes a random code for the solution
-            firstPeg = randomColor();
-            secondPeg = randomColor();
-            thirdPeg = randomColor();
-            fourthPeg = randomColor();
-        }
-        public codeClass(string first, string second, string third, string fourth)
-        {//constructor that uses strings with Color from the guess
-            firstPeg = first;
-            secondPeg = second;
-            thirdPeg = third;
-            fourthPeg = fourth;
-        }
-
-
-        private string randomColor()
+        codeClass SolutionCode = new codeClass();
+        public solutionClass()
         {
-            int colorNum = rng.Next(1, 6);
-            string randColor = colorArray[(colorNum - 1)];
-            return randColor;
+        }
+        public Boolean Check(codeClass guess, out int correctColor, out int correctPosition)
+        {
+            correctColor = 0;
+            correctPosition = 0;
+            //checks if the guess matched the solution
+            if (guess.getFirstPeg().Equals(SolutionCode.getFirstPeg()))
+            {
+                correctPosition++;
+            }
+            if (guess.getSecondPeg().Equals(SolutionCode.getSecondPeg()))
+            {
+                correctPosition++;
+            }
+            if (guess.getThirdPeg().Equals(SolutionCode.getThirdPeg()))
+            {
+                correctPosition++;
+            }
+            if (guess.getFourthPeg().Equals(SolutionCode.getFourthPeg()))
+            {
+                correctPosition++;
+            }
+            if (correctPosition == 4)
+            {
+                return true;//only returns true when the game is solved. Otherwise, it should return false but still update the two counter variables
+            }
+
+            //add the check for if the color is correct but not necessarily the position here
+
         }
     }
 }
