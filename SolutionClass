@@ -1,0 +1,21 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Mastermind
+{
+    class solutionClass
+    {
+        Random rng = new Random();
+        codeClass Solution = new codeClass();
+        public solutionClass()
+        {
+        }
+        public Boolean Check(codeClass guess)
+        {
+            return true;
+        }
+    }
+}
