@@ -9,46 +9,51 @@ namespace Mastermind
     class solutionClass
     {
 
-        Random rng = new Random();
-        string[] colorArray = new string[6] {"Red", "Blue", "Yellow", "Green", "Purple", "Orange"};
-        string[] solutionCode = new string[4];
+        Random rng = new Random(); //random number generator for making the solution
+        string[] colorArray = new string[6] {"Red", "Blue", "Yellow", "Green", "Purple", "Orange"}; //the six possible colors used in the solution/guess sets
+																									//if we wanted to, higer diffuculties could use arrays with more or less colors
+        string[] solutionCode = new string[4];//where the solution set is stored
+		
         public solutionClass()
         {
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < 4; i++)//sets all four pegs in the solution set to a random color
             {
                 solutionCode[i] = randomColor();
             }
         }
-        public Boolean Check(string[] guess, out int correctColor, out int correctPosition)
+        public Boolean Check(string[] guess, out int correctColor, out int correctPosition) //checks for a win condition while evaluating correct color entries alongside correct position pegs
         {
-            correctColor = 0;
-            correctPosition = 0;
+            correctColor = 0;	 //set to 0 for each calculation to avoid the previous guess' results messing with the current guess
+            correctPosition = 0; //
 
             for (int i = 0; i < 4; i++)
             {
-                if (solutionCode[i].Equals(guess[i]))
+                if (solutionCode[i].Equals(guess[i])) //compares each peg in the guess to the one in the solution by same posiiton
                 {
-                    correctPosition++;
+                    correctPosition++; //only triggers when the colors line up. Since both arrays use the same index counter to read from, they only check 1-1, 2-2, etc.
                 }
             }
 
             if (correctPosition == 4)
             {
-                return true; //only returns true when the game is solved. Otherwise, it should return false but still update the two counter variables
+                return true; //only returns true when the game is solved. Otherwise, it will later return false while updating the counter variables.
             }
 
 
-            string[] colorCheck = (string[])solutionCode.Clone();
+            string[] colorCheck = (string[])solutionCode.Clone(); //by cloning the array it allows me to eliminate colors that have been matched already
+																  //for example, a guess[RRRR] against a solution[RGBY] will only increment once,
+																  //since after the first red pegs matched, it removed the R from the array
+																  //we don't want to mess with the original solution array for obvious reasons
 
             for (int j = 0; j < 4; j++)
             {
                 for (int k = 0; k < 4; k++)
                 {
-                    if (guess[j].Equals(colorCheck[k]))
+                    if (guess[j].Equals(colorCheck[k]))//this checks the first peg in the guess against all four solution pegs, then the second guess peg against all four and so on.
                     {
                         correctColor++;
-                        colorCheck[k] = "";
-                        break;
+                        colorCheck[k] = ""; //removes the matched color so it can't be matched more than once
+                        break; //break here to prevent a single color from checking against multiple solution pegs, like guess[RGBY] vs solution[RRRR]
                     }
                 }
             }
@@ -60,14 +65,6 @@ namespace Mastermind
             int colorNum = rng.Next(1, 6);
             string randColor = colorArray[(colorNum - 1)];
             return randColor;
-        }
-
-        private void makeSolution()
-        {//method that makes a random code for the solution
-            for (int i = 0; i < 4; i++)
-            {
-                solutionCode[i] = randomColor();
-            }
         }
     }
 }
