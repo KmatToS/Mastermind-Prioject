@@ -13,58 +13,83 @@ namespace Mastermind
     public partial class Form1 : Form
     {
         solutionClass Solution = new solutionClass();
-        int guessCount = 10; //can be adjusted through a difficulty pop-up, but for now may as well leave it at 10
+        int guessCount = 10; //can can be adjusted through a difficulty pop-up, but for now may as well leave it at 10
+        string[] guessArray = new string[4]; //contains the 4 pegs used in the guess. This array gets re-used for each guess
         public Form1()
         {
             InitializeComponent();
         }
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            btnRules_Click(sender, e); //opens the rules pop-up on opening
 
+            //for some reason I couldn't set the boxes to default to having a color listed so instead I'm forcing it here rather than deal with "blank" peg errors
+            firstBox.SelectedIndex = 1;
+            secondBox.SelectedIndex = 1;
+            thirdBox.SelectedIndex = 1;
+            fourthBox.SelectedIndex = 1;
+        }
         private void btnExit_Click(object sender, EventArgs e)
         {
-            this.Close();
+            this.Close(); //do I really have to explain this one?
         }
 
         private void btnConfirm_Click(object sender, EventArgs e)
         {
-            if (firstBox.Text == "" || secondBox.Text == "" || thirdBox.Text == "" || fourthBox.Text == "")
+
+            /* if (firstBox.Text == "" || secondBox.Text == "" || thirdBox.Text == "" || fourthBox.Text == "")
             {
-                MessageBox.Show("There are no \"empty\" pegs in the code. You must choose a color for all four pegs.", "Error");
+                MessageBox.Show("There are no \"empty\" pegs in the code. You must choose a color for all four pegs.", "Error"); 
                 return;
-            }
+            } this was for checking empty boxes but I'm just going to force it instead. Might need it later. */ 
+
             int correctColor = 0;
             int correctPosition = 0;
+
+            guessArray[0] = firstBox.Text;  //
+            guessArray[1] = secondBox.Text; //fills out the guess with the chosen "pegs"
+            guessArray[2] = thirdBox.Text;  //
+            guessArray[3] = fourthBox.Text; //
+
             guessCount--;
-            lblGuessCount.Text = ("You have " + guessCount + " guesses remaining.");
 
-            codeClass guessCode =  new codeClass(firstBox.Text, secondBox.Text, thirdBox.Text, fourthBox.Text);
-
-            if (Solution.Check(guessCode, out correctColor, out correctPosition))
-            {//this will only trigger if Solution returns "true" if all 4 pegs are correct
-                MessageBox.Show("Holy carp you won", "A Winner Is You");
+            if (Solution.Check(guessArray, out correctColor, out correctPosition))
+            {
+                MessageBox.Show("Holy carp you won", "A Winner Is You"); //Solution.Check() only returns true when all 4 pegs match
                 this.Close();
             }
-            else
-            { //this should update the show the number of correct colors and positions
-                MessageBox.Show("You did not solve the game. /n /n Of the colors you entered, " + correctColor 
-                    + " of them were of the correct color. /n /n Among those, " + correctPosition
-                    + " of them were also in the correct position. /n /n You have " + guessCount + " guesses remaining.");
+
+            else if (guessCount == 0) //only triggers when you used your last guess *and* did not solve the game with that guess
+            {
+                MessageBox.Show("You did not solve the game and have no guesses remaining.", "GAME OVER");
+                this.Close();
             }
+
+            else //when you made an incorrect guess but still haven't lost the game
+            { //announces how many pegs are correct color/position, a.k.a. the Black pegs,
+              //as well as how many are only of the correct color (which only occurs once), a.k.a. the White pegs
+                MessageBox.Show("You did not solve the game. \n \nOf the colors you entered, " + correctColor 
+                    + " of them were of the correct color. \n \nAmong those, " + correctPosition
+                    + " of them were also in the correct position. \n \nYou have " + guessCount + " guesses remaining.");
+            } //when we do the visual component, remember that the numbers here overlap a bit. 
+              //I think just doing (correctColor - correctPosition) will return the real number of white pegs but I haven't tested that
+
+            lblGuessCount.Text = "You have " + guessCount + " remaining attempts to solve the game."; //update the visible number of guesses.
         }
 
-        private void btnRules_Click(object sender, EventArgs e)
-        { //Explananation of the rules because why not
-            MessageBox.Show("In order to win the game, you must enter the correct combination of colored pegs that matches the hidden code randomly generated by the computer." +
-                "\n \n Each time you make a guess, the game will tell you how many of the pegs you entered are of the correct color, but not in the correct place." +
-                " \n \n It will also tell you how many pegs are both of the correct color and in the correct position." +
-                "\n \n You have a limited number of guesses, so make the most of each guess. If you run out of guesses before you crack the code, the game is over.", 
-                "Mastermind Game Rules");
-            return;
-        }
-
-        private void btnCheat_Click(object sender, EventArgs e)
+        private void btnRules_Click(object sender, EventArgs e) //displays the rules for reference. This is what loads when you first start the game.
         {
-            //for the purpose of demonstrating this would reveal the solution code. May end up removing this anyway since it's going to be a pain to implement.
-            return;
+            MessageBox.Show("In order to win the game, you must enter the correct combination of colored pegs that matches the hidden code randomly generated by the computer." +
+                "\n \nEach time you make a guess, the game will tell you how many of the pegs you entered are of the correct color, but not in the correct place." +
+                " \n \nIt will also tell you how many pegs are both of the correct color and in the correct position." +
+                "\n \nYou have a limited number of guesses, so make the most of each guess. If you run out of guesses before you crack the code, the game is over.", 
+                "Mastermind Game Rules");
+        }
+
+        private void btnView_Click(object sender, EventArgs e) //to be hopefully added in the final version.
+        {
+            MessageBox.Show("This is where we would show the previous guesses in a visual arrangement like a real game board." +
+                "\nFor the purposes of this assignment, this was left out of the demo version");
         }
     }//end class
 }//end namespace
